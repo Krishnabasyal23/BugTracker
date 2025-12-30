@@ -1,4 +1,5 @@
-﻿namespace BugTracker.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+namespace BugTracker.Models
 {
     public class Ticket
     {
@@ -15,6 +16,9 @@
         // naviation properties
         public TicketStatus TicketStatus { get; set; }
         public TicketPriority TicketPriority { get; set; }
+        // submitter
+        public string SubmitterId { get; set;}
+        public ApplicationUser Submitter { get; set;}
 
 
 
