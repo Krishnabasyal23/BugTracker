@@ -1,3 +1,7 @@
+using BugTracker.Data;
+using BugTracker.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 namespace BugTracker
 {
     public class Program
@@ -8,6 +12,15 @@ namespace BugTracker
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            // register dbContext
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("Default Connection")));
+            // register identity
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
             var app = builder.Build();
 
