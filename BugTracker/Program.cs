@@ -16,7 +16,7 @@ namespace BugTracker
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
-                    builder.Configuration.GetConnectionString("Default Connection")));
+                    builder.Configuration.GetConnectionString("DefaultConnection")));
             // register identity
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -33,8 +33,9 @@ namespace BugTracker
             }
 
             app.UseHttpsRedirection();
-            app.UseRouting();
 
+            app.UseRouting();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapStaticAssets();
