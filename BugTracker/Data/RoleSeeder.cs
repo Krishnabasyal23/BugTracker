@@ -19,7 +19,6 @@ namespace BugTracker.Data
                 {
                     await roleManager.CreateAsync(new IdentityRole(role));
 
-
                 }
             }
 

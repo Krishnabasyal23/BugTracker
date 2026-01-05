@@ -24,6 +24,7 @@ namespace BugTracker.Data
                     new TicketPriority { Name = "Medium" },
                     new TicketPriority { Name = "High" },
                     new TicketPriority { Name = "Urgent" }
+
                 );
             }
             context.SaveChanges();

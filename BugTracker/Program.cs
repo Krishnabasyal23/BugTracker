@@ -2,11 +2,12 @@ using BugTracker.Data;
 using BugTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 namespace BugTracker
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +23,7 @@ namespace BugTracker
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -31,6 +33,25 @@ namespace BugTracker
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            using (var scope = app.Services.CreateScope()) // create temporary container for services.
+            { 
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var context = services.GetRequiredService<ApplicationDbContext>();
+                    DbInitializer.Initialize(context);
+
+                    var RoleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    await RoleSeeder.SeedRoleAsync(RoleManager);
+
+                }
+                catch ( Exception ex )
+                {
+                    Console.WriteLine($"Error seeding data:{ex.Message}");
+                }
+            }
+            
 
             app.UseHttpsRedirection();
 
