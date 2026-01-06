@@ -1,8 +1,8 @@
 using BugTracker.Data;
+using BugTracker.Data.Seeders;
 using BugTracker.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 namespace BugTracker
 {
     public class Program
@@ -23,7 +23,7 @@ namespace BugTracker
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -34,26 +34,29 @@ namespace BugTracker
                 app.UseHsts();
             }
 
-            using (var scope = app.Services.CreateScope()) // create temporary container for services.
-            { 
+ 
+
+            using (var scope = app.Services.CreateScope()) // creatre temporary container for services.
+            {
                 var services = scope.ServiceProvider;
-                try
+                try 
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    DbInitializer.Initialize(context);
+                    context.Database.Migrate();
 
-                    var RoleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-                    await RoleSeeder.SeedRoleAsync(RoleManager);
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+                    await RoleSeeder.SeedRoleAsync(roleManager);
 
+                    var userManager=services.GetRequiredService<UserManager<ApplicationUser>>();
+                    await AdminUserSeeder.SeedAdminAsync(userManager);
                 }
-                catch ( Exception ex )
+                catch (Exception ex)
                 {
-                    Console.WriteLine($"Error seeding data:{ex.Message}");
+                    Console.WriteLine($"Error during seeding: {ex.Message}");
                 }
             }
-            
 
-            app.UseHttpsRedirection();
+                app.UseHttpsRedirection();
 
             app.UseRouting();
             app.UseAuthentication();
