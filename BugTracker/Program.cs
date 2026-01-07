@@ -19,10 +19,26 @@ namespace BugTracker
                 options.UseSqlServer(
                     builder.Configuration.GetConnectionString("DefaultConnection")));
             // register identity
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options=>      
+  
+                {
+                    options.Password.RequireNonAlphanumeric = true;
+                    options.Password.RequiredLength = 8;
+                    options.Password.RequireDigit = true;
+                    options.Password.RequireLowercase = true;
+                    options.Password.RequireUppercase = true;
+                    options.User.RequireUniqueEmail = true;
+                    options.SignIn.RequireConfirmedAccount = false;
+                    options.SignIn.RequireConfirmedEmail = false;
+                    options.SignIn.RequireConfirmedPhoneNumber = false;
 
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+
+
+
+                .AddDefaultTokenProviders();
+            
 
             var app = builder.Build();
 
