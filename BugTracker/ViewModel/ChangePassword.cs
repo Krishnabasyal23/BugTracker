@@ -4,9 +4,12 @@ namespace BugTracker.ViewModel
 {
     public class ChangePassword
     {
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress]
-        public String Email { get; set; }
+        [Required(ErrorMessage = "Old Password is required")]
+        [DataType(DataType.Password)]
+        [Display(Name = "Enter Old Passowrd")]
+        public String OldPassword { get; set; }
+            
+
 
 
         [Required(ErrorMessage = "Password is required")]
